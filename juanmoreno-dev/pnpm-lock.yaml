@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      98.css:
+        specifier: ^0.1.21
+        version: 0.1.21
       '@tailwindcss/vite':
         specifier: ^4.2.4
         version: 4.2.4(vite@7.3.2(jiti@2.6.1)(lightningcss@1.32.0))
@@ -19,6 +22,9 @@ importers:
         version: 4.2.4
 
 packages:
+
+  98.css@0.1.21:
+    resolution: {integrity: sha512-ddk5qtUWyapM0Bzd5jwGExoE5fdSEGrP+F5VbYjyZLf2c9UVmn6w2NPTvCsoD4BWdGsjdLjlkQGhWwWTJcYQJQ==}
 
   '@astrojs/compiler@4.0.0':
     resolution: {integrity: sha512-eouss7G8ygdZqHuke033VMcVw5HTZUu+PXd/h06DGDUg/jt5btPYPqh66ENWw/mU78rBrf/oeC4oqoBwMtDMNA==}
@@ -1593,6 +1599,8 @@ packages:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
+
+  98.css@0.1.21: {}
 
   '@astrojs/compiler@4.0.0': {}
 
