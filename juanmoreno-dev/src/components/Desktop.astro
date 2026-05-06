@@ -1,8 +1,42 @@
 ---
 import DesktopIcons from './DesktopIcons.astro';
+import WindowFrame from './WindowFrame.astro';
 ---
 
 <main class="relative min-h-screen">
   <DesktopIcons />
+
+  <div
+    id="recycle-window"
+    class="absolute left-1/2 top-1/2 hidden w-full max-w-content -translate-x-1/2 -translate-y-1/2"
+  >
+    <WindowFrame title="Recycle Bin" windowId="recycle-window">
+      <div class="bg-panel-bg p-win-16">
+        <h2 class="text-win-20 font-bold">Error 202: Love Not Found</h2>
+        <p class="mt-win-8 text-win-14">
+          The requested item was not found on this heart. Please check the address and try again.
+        </p>
+      </div>
+    </WindowFrame>
+  </div>
+
   <slot />
 </main>
+
+<script is:inline>
+  const recycleIcon = document.getElementById('recycle-icon');
+  const recycleWindow = document.getElementById('recycle-window');
+  const closeButton = document.querySelector('[data-window-close="recycle-window"]');
+
+  if (recycleIcon && recycleWindow) {
+    recycleIcon.addEventListener('dblclick', () => {
+      recycleWindow.classList.remove('hidden');
+    });
+  }
+
+  if (closeButton && recycleWindow) {
+    closeButton.addEventListener('click', () => {
+      recycleWindow.classList.add('hidden');
+    });
+  }
+</script>

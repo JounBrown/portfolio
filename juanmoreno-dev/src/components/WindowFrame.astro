@@ -1,0 +1,167 @@
+---
+import arrowIcon from '../assets/arrow.ico?url';
+import errorIcon from '../assets/error.ico?url';
+import refreshIcon from '../assets/refresh.ico?url';
+import homeIcon from '../assets/home.ico?url';
+import searchIcon from '../assets/search_web.ico?url';
+import favoritesIcon from '../assets/directory_favorites.ico?url';
+import printIcon from '../assets/printer.ico?url';
+import explorerPageIcon from '../assets/explorer_page.ico?url';
+
+const {
+  title = 'Portfolio Explorer',
+  showMenu = true,
+  showToolbar = true,
+  showAddress = true,
+  windowId = 'window'
+} = Astro.props;
+---
+
+<div class="window w-full max-w-content bg-ui-light" data-window-id={windowId}>
+  <div class="title-bar bg-titlebar-active text-white">
+    <div class="window-header flex w-full items-center justify-between gap-win-8 px-win-8">
+      <div class="flex items-center gap-win-8">
+        <img src="/favicon.ico" alt="Window icon" class="h-4 w-4 shrink-0" />
+        <div class="title-bar-text">{title}</div>
+      </div>
+
+      <div class="title-bar-controls">
+        <button aria-label="Minimize"></button>
+        <button aria-label="Maximize"></button>
+        <button aria-label="Close" data-window-close={windowId}></button>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="window-bars overflow-hidden bg-ui-light"
+    style="border: 1px solid #808080; box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #000000;"
+  >
+    {showMenu && (
+      <menu class="menu-bar flex items-center gap-0">
+        <div
+          class="h-[25px] w-[5px] shrink-0"
+          style="margin: 4px 6px 4px 5px; background: #bdbdbd; box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #000000;"
+        ></div>
+        <li><button class="button"><u>F</u>ile</button></li>
+        <li><button class="button"><u>E</u>dit</button></li>
+        <li><button class="button"><u>V</u>iew</button></li>
+        <li><button class="button"><u>G</u>o</button></li>
+        <li><button class="button"><u>F</u>avorites</button></li>
+        <li><button class="button"><u>T</u>ools</button></li>
+        <li><button class="button"><u>H</u>elp</button></li>
+      </menu>
+    )}
+
+    {showMenu && showToolbar && (
+      <div
+        class="h-[2px] shrink-0"
+        style="margin: 0 1px; width: calc(100% - 3px); background: #c0c0c0; box-shadow: inset 0 1px 0 #ffffff, inset 0 -1px 0 #808080;"
+      ></div>
+    )}
+
+    {showToolbar && (
+      <div class="window-body flex items-center gap-0 bg-ui-light pl-0 pr-0 py-0" style="margin: 0;">
+        <div
+          class="w-[5px] shrink-0"
+          style="height: 38px; min-height: 38px; max-height: 38px; margin: 3px 5px 3px 5px; background: #bdbdbd; box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #000000;"
+        ></div>
+        <button class="button toolbar-icon-button toolbar-back-button" style="padding-top: 3px; padding-bottom: 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: #c0c0c0;">
+          <img src={arrowIcon} alt="Back" class="h-4 w-4 shrink-0" style="transform: scaleX(-1); filter: grayscale(1) brightness(0.2) saturate(0); opacity: 0.75;" />
+          <span>Back</span>
+        </button>
+        <button class="button toolbar-icon-button toolbar-forward-button" style="padding-top: 3px; padding-bottom: 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: #c0c0c0;">
+          <img src={arrowIcon} alt="Forward" class="h-4 w-4 shrink-0" style="filter: grayscale(1) brightness(0.2) saturate(0); opacity: 0.75;" />
+          <span>Forward</span>
+        </button>
+        <button class="button toolbar-icon-button toolbar-stop-button" style="padding-top: 3px; padding-bottom: 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: #c0c0c0;">
+          <img src={errorIcon} alt="Stop" class="toolbar-stop-icon h-4 w-4 shrink-0" />
+          <span>Stop</span>
+        </button>
+        <button class="button toolbar-icon-button toolbar-refresh-button" style="padding-top: 3px; padding-bottom: 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: #c0c0c0;">
+          <img src={refreshIcon} alt="Refresh" class="toolbar-refresh-icon h-4 w-4 shrink-0" />
+          <span>Refresh</span>
+        </button>
+        <button class="button toolbar-icon-button toolbar-home-button" style="padding-top: 3px; padding-bottom: 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: #c0c0c0;">
+          <img src={homeIcon} alt="Home" class="toolbar-home-icon h-4 w-4 shrink-0" />
+          <span>Home</span>
+        </button>
+        <button class="button toolbar-icon-button toolbar-search-button" style="padding-top: 3px; padding-bottom: 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: #c0c0c0;">
+          <img src={searchIcon} alt="Search" class="toolbar-search-icon h-4 w-4 shrink-0" />
+          <span>Search</span>
+        </button>
+        <button class="button toolbar-icon-button toolbar-favorites-button" style="padding-top: 3px; padding-bottom: 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: #c0c0c0;">
+          <img src={favoritesIcon} alt="Favorites" class="toolbar-favorites-icon h-4 w-4 shrink-0" />
+          <span>Favorites</span>
+        </button>
+        <button class="button toolbar-icon-button toolbar-print-button" style="padding-top: 3px; padding-bottom: 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: #c0c0c0;">
+          <img src={printIcon} alt="Print" class="toolbar-print-icon h-4 w-4 shrink-0" />
+          <span>Print</span>
+        </button>
+      </div>
+    )}
+
+    {showToolbar && showAddress && (
+      <div
+        class="h-[2px] shrink-0"
+        style="margin: 0 1px; width: calc(100% - 3px); background: #c0c0c0; box-shadow: inset 0 1px 0 #ffffff, inset 0 -1px 0 #808080;"
+      ></div>
+    )}
+
+    {showAddress && (
+      <div class="flex items-center bg-ui-light pl-[5px] pr-win-8" style="height: 32px;">
+        <div
+          class="h-[18px] w-[5px] shrink-0"
+          style="margin: 0; background: #bdbdbd; box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #000000;"
+        ></div>
+        <div class="shrink-0" style="width: 5px;"></div>
+        <label class="text-win-12">Address</label>
+        <div class="address-url-field w-full" style="height: 22px;">
+          <input
+            class="w-full address-url-input"
+            type="text"
+            value="https://"
+            style={`background-image: url(${explorerPageIcon}); background-repeat: no-repeat; background-position: 4px center; background-size: 12px 12px;`}
+          />
+        </div>
+      </div>
+    )}
+  </div>
+
+  <div class="window-content window-body">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .toolbar-stop-icon {
+    filter: none;
+    opacity: 1;
+  }
+
+  .toolbar-refresh-icon,
+  .toolbar-home-icon {
+    filter: none;
+    opacity: 1;
+  }
+
+  .toolbar-search-icon,
+  .toolbar-favorites-icon {
+    filter: none;
+    opacity: 1;
+  }
+
+  .toolbar-print-icon {
+    filter: none;
+    opacity: 1;
+  }
+
+  .address-url-field {
+    min-width: 0;
+  }
+
+  .address-url-input {
+    padding-left: 18px;
+    height: 22px;
+  }
+</style>
