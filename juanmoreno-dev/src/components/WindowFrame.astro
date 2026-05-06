@@ -109,19 +109,19 @@ const {
     )}
 
     {showAddress && (
-      <div class="flex items-center bg-ui-light pl-[5px] pr-win-8" style="height: 32px;">
+      <div class="flex items-stretch bg-ui-light pl-[5px] pr-win-8" style="height: 28px;">
         <div
-          class="h-[18px] w-[5px] shrink-0"
+          class="h-[25px] w-[5px] shrink-0 self-start"
           style="margin: 0; background: #bdbdbd; box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #000000;"
         ></div>
-        <div class="shrink-0" style="width: 5px;"></div>
-        <label class="text-win-12">Address</label>
-        <div class="address-url-field w-full" style="height: 22px;">
+        <div class="shrink-0 h-full" style="width: 5px;"></div>
+        <label class="text-win-12 flex h-full items-center" style="margin: 0; padding: 0 5px; box-sizing: border-box; font-size: 13px; font-weight: 505;">Address</label>
+        <div class="address-url-field h-full w-full">
           <input
             class="w-full address-url-input"
             type="text"
             value="https://"
-            style={`background-image: url(${explorerPageIcon}); background-repeat: no-repeat; background-position: 4px center; background-size: 12px 12px;`}
+            
           />
         </div>
       </div>
@@ -161,7 +161,9 @@ const {
   }
 
   .address-url-input {
-    padding-left: 18px;
-    height: 22px;
+    padding-left: 5px;
+    height: calc(100% - 4px);
+    margin: 2px 0;
+    box-sizing: border-box;
   }
 </style>
