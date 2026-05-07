@@ -17,8 +17,8 @@ const {
 } = Astro.props;
 ---
 
-<div class="window w-full max-w-content bg-ui-light" data-window-id={windowId}>
-  <div class="title-bar bg-titlebar-active text-white">
+<div class="window w-full max-w-content bg-ui-light" data-window-id={windowId} data-window-title={title} style="width: 1081px; height: 717px;">
+  <div class="title-bar bg-titlebar-active text-white" style="cursor: move; user-select: none; touch-action: none;">
     <div class="window-header flex w-full items-center justify-between gap-win-8 px-win-8">
       <div class="flex items-center gap-win-8">
         <img src="/favicon.ico" alt="Window icon" class="h-4 w-4 shrink-0" />
@@ -26,8 +26,8 @@ const {
       </div>
 
       <div class="title-bar-controls">
-        <button aria-label="Minimize"></button>
-        <button aria-label="Maximize"></button>
+        <button aria-label="Minimize" data-window-minimize={windowId}></button>
+        <button aria-label="Maximize" data-window-maximize={windowId}></button>
         <button aria-label="Close" data-window-close={windowId}></button>
       </div>
     </div>
@@ -166,4 +166,252 @@ const {
     margin: 2px 0;
     box-sizing: border-box;
   }
+
+  .taskbar-window-button {
+    min-width: 160px;
+    max-width: 240px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+    padding: 0 10px;
+    border: 1px solid #808080;
+    background: #c0c0c0;
+    box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #000000;
+    font-size: 12px;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 </style>
+
+<script is:inline define:vars={{ windowId, title }}>
+  const initWindowFrame = () => {
+    const windowRoot = document.querySelector(`[data-window-id="${windowId}"]`);
+    const windowWrapper = windowRoot?.parentElement;
+    const desktopCanvas = document.getElementById('desktop-canvas');
+    const titleBar = windowRoot?.querySelector('.title-bar');
+    const minimizeButton = windowRoot?.querySelector(`[data-window-minimize="${windowId}"]`);
+    const maximizeButton = windowRoot?.querySelector(`[data-window-maximize="${windowId}"]`);
+    const closeButton = windowRoot?.querySelector(`[data-window-close="${windowId}"]`);
+
+    let windowRestoredClassName = windowRoot?.className ?? '';
+    let windowRestoredStyle = windowRoot?.getAttribute('style') ?? '';
+    let wrapperRestoredClassName = windowWrapper?.className ?? '';
+    let wrapperRestoredStyle = windowWrapper?.getAttribute('style') ?? '';
+
+    let lastClientX = 0;
+    let lastClientY = 0;
+    let dragPointerId = -1;
+    let isDragging = false;
+
+    const getDesktopMetrics = () => {
+      const canvasRect = desktopCanvas?.getBoundingClientRect();
+      const baseWidth = desktopCanvas?.offsetWidth ?? 1920;
+      const baseHeight = desktopCanvas?.offsetHeight ?? 1040;
+      const scale = canvasRect && baseWidth ? canvasRect.width / baseWidth : 1;
+
+      return {
+        canvasLeft: canvasRect?.left ?? 0,
+        canvasTop: canvasRect?.top ?? 0,
+        canvasWidth: baseWidth,
+        canvasHeight: baseHeight,
+        scale
+      };
+    };
+
+    const saveNormalState = () => {
+      if (!windowRoot || !windowWrapper) return;
+
+      windowRestoredClassName = windowRoot.className;
+      windowRestoredStyle = windowRoot.getAttribute('style') ?? '';
+      wrapperRestoredClassName = windowWrapper.className;
+      wrapperRestoredStyle = windowWrapper.getAttribute('style') ?? '';
+    };
+
+    const stopDrag = () => {
+      if (!isDragging) return;
+
+      isDragging = false;
+      dragPointerId = -1;
+      document.body.style.userSelect = '';
+      saveNormalState();
+      window.removeEventListener('pointermove', onDragMove);
+      window.removeEventListener('pointerup', stopDrag);
+      window.removeEventListener('pointercancel', stopDrag);
+    };
+
+    const onDragMove = (event) => {
+      if (!windowWrapper || !isDragging || event.pointerId !== dragPointerId) return;
+
+      const { canvasWidth, canvasHeight, scale } = getDesktopMetrics();
+      
+      const deltaX = (event.clientX - lastClientX) / scale;
+      const deltaY = (event.clientY - lastClientY) / scale;
+
+      lastClientX = event.clientX;
+      lastClientY = event.clientY;
+
+      const currentLeft = parseFloat(windowWrapper.style.left || 0);
+      const currentTop = parseFloat(windowWrapper.style.top || 0);
+
+      const nextLeft = currentLeft + deltaX;
+      const nextTop = currentTop + deltaY;
+
+      const width = parseFloat(windowWrapper.style.width) || windowRoot.offsetWidth;
+      const height = parseFloat(windowWrapper.style.height) || windowRoot.offsetHeight;
+
+      const viewportWidth = window.visualViewport?.width ?? window.innerWidth;
+      const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+      const taskbarHeight = document.querySelector('footer')?.getBoundingClientRect().height ?? 40;
+
+      const unscaledViewportWidth = viewportWidth / scale;
+      const unscaledViewportHeight = (viewportHeight - taskbarHeight) / scale;
+
+      const maxLeft = Math.max(0, unscaledViewportWidth - width);
+      const maxTop = Math.max(0, unscaledViewportHeight - height);
+
+      windowWrapper.style.left = `${Math.min(Math.max(nextLeft, 0), maxLeft)}px`;
+      windowWrapper.style.top = `${Math.min(Math.max(nextTop, 0), maxTop)}px`;
+    };
+
+    const startDrag = (event) => {
+      if (!windowRoot || !windowWrapper || windowRoot.dataset.windowState === 'maximized') return;
+      if (event.target instanceof Element && event.target.closest('button')) return;
+
+      saveNormalState();
+
+      const { canvasWidth, canvasHeight, scale } = getDesktopMetrics();
+      const currentWidth = windowRoot.offsetWidth;
+      const currentHeight = windowRoot.offsetHeight;
+
+      const viewportWidth = window.visualViewport?.width ?? window.innerWidth;
+      const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+      const taskbarHeight = document.querySelector('footer')?.getBoundingClientRect().height ?? 40;
+
+      const unscaledViewportWidth = viewportWidth / scale;
+      const unscaledViewportHeight = (viewportHeight - taskbarHeight) / scale;
+
+      if (!windowWrapper.style.left || !windowWrapper.style.left.endsWith('px') || windowWrapper.style.transform !== 'none') {
+        const initialLeft = (unscaledViewportWidth - currentWidth) / 2;
+        const initialTop = (unscaledViewportHeight - currentHeight) / 2;
+        
+        windowWrapper.style.left = `${initialLeft}px`;
+        windowWrapper.style.top = `${initialTop}px`;
+        windowWrapper.style.width = `${currentWidth}px`;
+        windowWrapper.style.height = `${currentHeight}px`;
+        windowWrapper.style.transform = 'none';
+        
+        windowWrapper.classList.remove('left-1/2', 'top-1/2', '-translate-x-1/2', '-translate-y-1/2', 'w-full', 'max-w-content');
+      }
+
+      lastClientX = event.clientX;
+      lastClientY = event.clientY;
+      dragPointerId = event.pointerId;
+      isDragging = true;
+
+      const maxLeft = Math.max(0, unscaledViewportWidth - currentWidth);
+      const maxTop = Math.max(0, unscaledViewportHeight - currentHeight);
+
+      document.body.style.userSelect = 'none';
+      window.addEventListener('pointermove', onDragMove);
+      window.addEventListener('pointerup', stopDrag);
+      window.addEventListener('pointercancel', stopDrag);
+    };
+
+    const isMaximized = () => windowRoot?.dataset.windowState === 'maximized';
+
+    const setMaximizedState = (nextState) => {
+      if (!windowRoot || !windowWrapper) return;
+
+      if (nextState === 'maximized') {
+        saveNormalState();
+        windowWrapper.className = 'absolute left-0 top-0 z-20 h-full w-full';
+        windowWrapper.style.transform = 'none';
+        windowWrapper.style.maxWidth = 'none';
+        windowWrapper.classList.remove('hidden');
+
+        windowRoot.className = 'window bg-ui-light';
+        windowRoot.style.width = '100%';
+        windowRoot.style.height = '100%';
+        windowRoot.style.maxWidth = 'none';
+        windowRoot.dataset.windowState = 'maximized';
+
+        maximizeButton?.setAttribute('aria-label', 'Restore');
+        maximizeButton?.setAttribute('title', 'Restore');
+        return;
+      }
+
+      windowWrapper.className = wrapperRestoredClassName;
+      windowWrapper.setAttribute('style', wrapperRestoredStyle);
+      windowWrapper.classList.remove('hidden');
+
+      windowRoot.className = windowRestoredClassName;
+      windowRoot.setAttribute('style', windowRestoredStyle);
+      windowRoot.classList.remove('hidden');
+      windowRoot.dataset.windowState = 'normal';
+
+      maximizeButton?.setAttribute('aria-label', 'Maximize');
+      maximizeButton?.setAttribute('title', 'Maximize');
+    };
+
+    const restoreWindow = () => {
+      if (!windowRoot) return;
+      windowRoot.classList.remove('hidden');
+      windowWrapper?.classList.remove('hidden');
+      windowRoot.dataset.minimized = 'false';
+      saveNormalState();
+    };
+
+    const minimizeWindow = () => {
+      if (!windowRoot) return;
+
+      const taskbarItems = document.getElementById('taskbar-items');
+      if (!taskbarItems) return;
+
+      windowRoot.classList.add('hidden');
+      windowRoot.dataset.minimized = 'true';
+
+      if (taskbarItems.querySelector(`[data-taskbar-window="${windowId}"]`)) return;
+
+      const taskbarButton = document.createElement('button');
+      taskbarButton.type = 'button';
+      taskbarButton.className = 'taskbar-window-button';
+      taskbarButton.dataset.taskbarWindow = windowId;
+      taskbarButton.textContent = title;
+      taskbarButton.addEventListener('click', restoreWindow);
+      taskbarItems.appendChild(taskbarButton);
+    };
+
+    const toggleMaximizeWindow = () => {
+      if (!windowRoot || !windowWrapper) return;
+
+      if (isMaximized()) {
+        setMaximizedState('normal');
+        return;
+      }
+
+      setMaximizedState('maximized');
+    };
+
+    minimizeButton?.addEventListener('click', minimizeWindow);
+    maximizeButton?.addEventListener('click', toggleMaximizeWindow);
+    titleBar?.addEventListener('pointerdown', startDrag);
+    closeButton?.addEventListener('click', () => {
+      stopDrag();
+      document.getElementById('taskbar-items')?.querySelector(`[data-taskbar-window="${windowId}"]`)?.remove();
+      setMaximizedState('normal');
+      windowRoot?.classList.add('hidden');
+      windowWrapper?.classList.add('hidden');
+      windowRoot?.dataset.minimized && (windowRoot.dataset.minimized = 'false');
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initWindowFrame, { once: true });
+  } else {
+    initWindowFrame();
+  }
+</script>

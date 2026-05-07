@@ -3,40 +3,99 @@ import DesktopIcons from './DesktopIcons.astro';
 import WindowFrame from './WindowFrame.astro';
 ---
 
-<main class="relative min-h-screen">
-  <DesktopIcons />
-
+<main id="desktop-shell" class="relative h-screen w-screen overflow-hidden bg-desktop-bg">
   <div
-    id="recycle-window"
-    class="absolute left-1/2 top-1/2 hidden w-full max-w-content -translate-x-1/2 -translate-y-1/2"
+    id="desktop-canvas"
+    class="absolute left-0 top-0 origin-top-left"
+    style="width: 1920px; height: 1040px;"
   >
-    <WindowFrame title="Recycle Bin" windowId="recycle-window">
-      <div class="bg-panel-bg p-win-16">
-        <h2 class="text-win-20 font-bold">Error 202: Love Not Found</h2>
-        <p class="mt-win-8 text-win-14">
-          The requested item was not found on this heart. Please check the address and try again.
-        </p>
-      </div>
-    </WindowFrame>
-  </div>
+    <DesktopIcons />
 
-  <slot />
+    <div
+      id="recycle-window"
+      class="absolute left-1/2 top-1/2 hidden w-full max-w-content -translate-x-1/2 -translate-y-1/2"
+    >
+      <WindowFrame title="Recycle Bin" windowId="recycle-window">
+        <div class="bg-panel-bg p-win-16">
+          <h2 class="text-win-20 font-bold">Error 202: Love Not Found</h2>
+          <p class="mt-win-8 text-win-14">
+            The requested item was not found on this heart. Please check the address and try again.
+          </p>
+        </div>
+      </WindowFrame>
+    </div>
+
+    <slot />
+  </div>
 </main>
 
 <script is:inline>
   const recycleIcon = document.getElementById('recycle-icon');
   const recycleWindow = document.getElementById('recycle-window');
+  const recycleFrame = recycleWindow?.querySelector('[data-window-id="recycle-window"]');
   const closeButton = document.querySelector('[data-window-close="recycle-window"]');
+
+  const updateDesktopScale = () => {
+    const desktopCanvas = document.getElementById('desktop-canvas');
+    if (!desktopCanvas) return;
+
+    const viewportWidth = window.visualViewport?.width ?? window.innerWidth;
+    const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+    const taskbarHeight = document.querySelector('footer')?.getBoundingClientRect().height ?? 40;
+    const baseWidth = 1920;
+    const baseHeight = 1040;
+    const scale = Math.min(viewportWidth / baseWidth, (viewportHeight - taskbarHeight) / baseHeight, 1);
+
+    desktopCanvas.style.transform = `scale(${scale})`;
+    document.documentElement.style.setProperty('--desktop-scale', String(scale));
+  };
+
+  const ensureRecycleTaskbarButton = () => {
+    const taskbarItems = document.getElementById('taskbar-items');
+    if (!taskbarItems || taskbarItems.querySelector('[data-taskbar-window="recycle-window"]')) return;
+
+    const taskbarButton = document.createElement('button');
+    taskbarButton.type = 'button';
+    taskbarButton.className = 'taskbar-window-button';
+    taskbarButton.dataset.taskbarWindow = 'recycle-window';
+    taskbarButton.textContent = 'Recycle Bin';
+    taskbarButton.addEventListener('click', () => {
+      recycleWindow?.classList.remove('hidden');
+      recycleFrame?.classList.remove('hidden');
+    });
+    taskbarItems.appendChild(taskbarButton);
+  };
+
+  const openRecycleWindow = () => {
+    recycleWindow?.classList.remove('hidden');
+    recycleFrame?.classList.remove('hidden');
+    ensureRecycleTaskbarButton();
+  };
+
+  const closeRecycleWindow = () => {
+    recycleFrame?.classList.add('hidden');
+    recycleWindow?.classList.add('hidden');
+    const taskbarItems = document.getElementById('taskbar-items');
+    taskbarItems?.querySelector('[data-taskbar-window="recycle-window"]')?.remove();
+  };
 
   if (recycleIcon && recycleWindow) {
     recycleIcon.addEventListener('dblclick', () => {
-      recycleWindow.classList.remove('hidden');
+      openRecycleWindow();
     });
   }
 
   if (closeButton && recycleWindow) {
     closeButton.addEventListener('click', () => {
-      recycleWindow.classList.add('hidden');
+      closeRecycleWindow();
     });
   }
+
+  if (recycleWindow && !recycleWindow.classList.contains('hidden')) {
+    ensureRecycleTaskbarButton();
+  }
+
+  updateDesktopScale();
+  window.addEventListener('resize', updateDesktopScale);
+  window.visualViewport?.addEventListener('resize', updateDesktopScale);
 </script>
