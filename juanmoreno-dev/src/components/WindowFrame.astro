@@ -328,15 +328,30 @@ const {
 
       if (nextState === 'maximized') {
         saveNormalState();
-        windowWrapper.className = 'absolute left-0 top-0 z-20 h-full w-full';
+        
+        const { scale } = getDesktopMetrics();
+        const viewportWidth = window.visualViewport?.width ?? window.innerWidth;
+        const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+        const taskbarHeight = document.querySelector('footer')?.getBoundingClientRect().height ?? 40;
+        
+        const unscaledViewportWidth = viewportWidth / scale;
+        const unscaledViewportHeight = (viewportHeight - taskbarHeight) / scale;
+
+        windowWrapper.className = 'absolute left-0 top-0 z-20';
         windowWrapper.style.transform = 'none';
         windowWrapper.style.maxWidth = 'none';
+        windowWrapper.style.left = '0px';
+        windowWrapper.style.top = '0px';
+        windowWrapper.style.width = `${unscaledViewportWidth}px`;
+        windowWrapper.style.height = `${unscaledViewportHeight}px`;
         windowWrapper.classList.remove('hidden');
 
         windowRoot.className = 'window bg-ui-light';
         windowRoot.style.width = '100%';
         windowRoot.style.height = '100%';
         windowRoot.style.maxWidth = 'none';
+        windowRoot.style.left = '';
+        windowRoot.style.top = '';
         windowRoot.dataset.windowState = 'maximized';
 
         maximizeButton?.setAttribute('aria-label', 'Restore');
