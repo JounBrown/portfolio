@@ -1,6 +1,7 @@
 ---
 import DesktopIcons from './DesktopIcons.astro';
 import WindowFrame from './WindowFrame.astro';
+import recycleIcon from '../assets/recycle_bin_full.ico?url';
 ---
 
 <main id="desktop-shell" class="relative h-screen w-screen overflow-hidden bg-desktop-bg">
@@ -15,8 +16,8 @@ import WindowFrame from './WindowFrame.astro';
       id="recycle-window"
       class="absolute left-1/2 top-1/2 hidden w-full max-w-content -translate-x-1/2 -translate-y-1/2"
     >
-      <WindowFrame title="Recycle Bin" windowId="recycle-window">
-        <div class="bg-panel-bg p-win-16">
+      <WindowFrame title="Recycle Bin" windowId="recycle-window" icon={recycleIcon}>
+        <div class="p-win-16 h-full">
           <h2 class="text-win-20 font-bold">Error 202: Love Not Found</h2>
           <p class="mt-win-8 text-win-14">
             The requested item was not found on this heart. Please check the address and try again.
