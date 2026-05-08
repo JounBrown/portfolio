@@ -590,7 +590,11 @@ const {
 
     document.addEventListener("pointerdown", (event) => {
       // Si la ventana ya está oculta o minimizada, no hacer nada
-      if (windowRoot?.classList.contains("hidden") || windowRoot?.dataset.minimized === "true") return;
+      if (
+        windowRoot?.classList.contains("hidden") ||
+        windowRoot?.dataset.minimized === "true" ||
+        windowWrapper?.classList.contains("hidden")
+      ) return;
 
       // Si el clic es dentro de la ventana, no hacer nada
       if (windowWrapper?.contains(event.target) || windowRoot?.contains(event.target)) return;
