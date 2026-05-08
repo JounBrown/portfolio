@@ -30,7 +30,7 @@ import recycleIcon from '../assets/recycle_bin_full.ico?url';
   </div>
 </main>
 
-<script is:inline>
+<script is:inline define:vars={{ recycleIconUrl: recycleIcon }}>
   const recycleIcon = document.getElementById('recycle-icon');
   const recycleWindow = document.getElementById('recycle-window');
   const recycleFrame = recycleWindow?.querySelector('[data-window-id="recycle-window"]');
@@ -53,24 +53,59 @@ import recycleIcon from '../assets/recycle_bin_full.ico?url';
 
   const ensureRecycleTaskbarButton = () => {
     const taskbarItems = document.getElementById('taskbar-items');
-    if (!taskbarItems || taskbarItems.querySelector('[data-taskbar-window="recycle-window"]')) return;
+    if (!taskbarItems) return null;
 
-    const taskbarButton = document.createElement('button');
-    taskbarButton.type = 'button';
-    taskbarButton.className = 'taskbar-window-button';
-    taskbarButton.dataset.taskbarWindow = 'recycle-window';
-    taskbarButton.textContent = 'Recycle Bin';
-    taskbarButton.addEventListener('click', () => {
-      recycleWindow?.classList.remove('hidden');
-      recycleFrame?.classList.remove('hidden');
-    });
-    taskbarItems.appendChild(taskbarButton);
+    let taskbarButton = taskbarItems.querySelector('[data-taskbar-window="recycle-window"]');
+    if (!taskbarButton) {
+      taskbarButton = document.createElement('button');
+      taskbarButton.type = 'button';
+      taskbarButton.className = 'flex items-center justify-start gap-1 px-2 font-bold';
+      taskbarButton.style.cssText = 'min-width: 160px; max-width: 240px; height: 28px; line-height: 1;';
+      taskbarButton.dataset.taskbarWindow = 'recycle-window';
+      taskbarButton.innerHTML = `
+        <img src="${recycleIconUrl}" alt="icon" class="h-4 w-4 shrink-0" />
+        <span style="font-weight: bold;">Recycle Bin</span>
+      `;
+      taskbarButton.addEventListener('click', () => {
+        if (recycleWindow?.classList.contains('hidden') || recycleFrame?.classList.contains('hidden')) {
+          openRecycleWindow();
+        } else {
+          minimizeRecycleWindow();
+        }
+      });
+      taskbarItems.appendChild(taskbarButton);
+    }
+    return taskbarButton;
+  };
+
+  const updateRecycleTaskbarState = () => {
+    const btn = ensureRecycleTaskbarButton();
+    if (!btn) return;
+    if (recycleWindow?.classList.contains('hidden') || recycleFrame?.classList.contains('hidden')) {
+      btn.classList.remove('active');
+      btn.style.boxShadow = '';
+      btn.style.paddingTop = '';
+      btn.style.paddingLeft = '';
+    } else {
+      btn.classList.add('active');
+      btn.style.boxShadow = 'inset -1px -1px #ffffff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080';
+      btn.style.paddingTop = '2px';
+      btn.style.paddingLeft = '10px';
+    }
   };
 
   const openRecycleWindow = () => {
     recycleWindow?.classList.remove('hidden');
     recycleFrame?.classList.remove('hidden');
-    ensureRecycleTaskbarButton();
+    if (recycleFrame) recycleFrame.dataset.minimized = 'false';
+    updateRecycleTaskbarState();
+  };
+
+  const minimizeRecycleWindow = () => {
+    recycleWindow?.classList.add('hidden');
+    recycleFrame?.classList.add('hidden');
+    if (recycleFrame) recycleFrame.dataset.minimized = 'true';
+    updateRecycleTaskbarState();
   };
 
   const closeRecycleWindow = () => {
@@ -93,7 +128,7 @@ import recycleIcon from '../assets/recycle_bin_full.ico?url';
   }
 
   if (recycleWindow && !recycleWindow.classList.contains('hidden')) {
-    ensureRecycleTaskbarButton();
+    updateRecycleTaskbarState();
   }
 
   updateDesktopScale();

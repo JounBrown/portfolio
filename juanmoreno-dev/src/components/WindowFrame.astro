@@ -256,11 +256,14 @@ const {
     box-sizing: border-box;
   }
 
+</style>
+<style is:global>
   .taskbar-window-button {
     min-width: 160px;
     max-width: 240px;
     height: 24px;
     display: inline-flex;
+    flex-direction: row;
     align-items: center;
     justify-content: flex-start;
     gap: 6px;
@@ -272,11 +275,10 @@ const {
     line-height: 1;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
   }
 </style>
 
-<script is:inline define:vars={{ windowId, title }}>
+<script is:inline define:vars={{ windowId, title, icon }}>
   const initWindowFrame = () => {
     const windowRoot = document.querySelector(`[data-window-id="${windowId}"]`);
     const windowWrapper = windowRoot?.parentElement;
@@ -497,33 +499,63 @@ const {
       maximizeButton?.setAttribute("title", "Maximize");
     };
 
+    const ensureTaskbarButton = () => {
+      const taskbarItems = document.getElementById("taskbar-items");
+      if (!taskbarItems) return null;
+      
+      let taskbarButton = taskbarItems.querySelector(`[data-taskbar-window="${windowId}"]`);
+      if (!taskbarButton) {
+        taskbarButton = document.createElement("button");
+        taskbarButton.type = "button";
+        taskbarButton.className = "flex items-center justify-start gap-1 px-2 font-bold";
+        taskbarButton.style.cssText = "min-width: 160px; max-width: 240px; height: 28px; line-height: 1;";
+        taskbarButton.dataset.taskbarWindow = windowId;
+        taskbarButton.innerHTML = `
+          <img src="${icon}" alt="icon" class="h-4 w-4 shrink-0" />
+          <span style="font-weight: bold;">${title}</span>
+        `;
+        taskbarButton.addEventListener("click", () => {
+          if (windowRoot?.dataset.minimized === "true") {
+            restoreWindow();
+          } else {
+            minimizeWindow();
+          }
+        });
+        taskbarItems.appendChild(taskbarButton);
+      }
+      return taskbarButton;
+    };
+
+    const updateTaskbarState = () => {
+      const btn = ensureTaskbarButton();
+      if (!btn) return;
+      if (windowRoot?.dataset.minimized === "true" || windowRoot?.classList.contains("hidden")) {
+        btn.classList.remove("active");
+        btn.style.boxShadow = "";
+        btn.style.paddingTop = "";
+        btn.style.paddingLeft = "";
+      } else {
+        btn.classList.add("active");
+        btn.style.boxShadow = "inset -1px -1px #ffffff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080";
+        btn.style.paddingTop = "2px";
+        btn.style.paddingLeft = "10px";
+      }
+    };
+
     const restoreWindow = () => {
       if (!windowRoot) return;
       windowRoot.classList.remove("hidden");
       windowWrapper?.classList.remove("hidden");
       windowRoot.dataset.minimized = "false";
       saveNormalState();
+      updateTaskbarState();
     };
 
     const minimizeWindow = () => {
       if (!windowRoot) return;
-
-      const taskbarItems = document.getElementById("taskbar-items");
-      if (!taskbarItems) return;
-
       windowRoot.classList.add("hidden");
       windowRoot.dataset.minimized = "true";
-
-      if (taskbarItems.querySelector(`[data-taskbar-window="${windowId}"]`))
-        return;
-
-      const taskbarButton = document.createElement("button");
-      taskbarButton.type = "button";
-      taskbarButton.className = "taskbar-window-button";
-      taskbarButton.dataset.taskbarWindow = windowId;
-      taskbarButton.textContent = title;
-      taskbarButton.addEventListener("click", restoreWindow);
-      taskbarItems.appendChild(taskbarButton);
+      updateTaskbarState();
     };
 
     const toggleMaximizeWindow = () => {
@@ -550,6 +582,26 @@ const {
       windowRoot?.classList.add("hidden");
       windowWrapper?.classList.add("hidden");
       windowRoot?.dataset.minimized && (windowRoot.dataset.minimized = "false");
+    });
+
+    if (!windowRoot?.classList.contains("hidden") && !windowWrapper?.classList.contains("hidden")) {
+      updateTaskbarState();
+    }
+
+    document.addEventListener("pointerdown", (event) => {
+      // Si la ventana ya está oculta o minimizada, no hacer nada
+      if (windowRoot?.classList.contains("hidden") || windowRoot?.dataset.minimized === "true") return;
+
+      // Si el clic es dentro de la ventana, no hacer nada
+      if (windowWrapper?.contains(event.target) || windowRoot?.contains(event.target)) return;
+
+      // Si el clic es en su propio botón de la barra de tareas, no hacer nada
+      // (el botón ya tiene su propia lógica de toggle)
+      const taskbarBtn = document.querySelector(`[data-taskbar-window="${windowId}"]`);
+      if (taskbarBtn?.contains(event.target)) return;
+
+      // Si es un clic externo, se minimiza
+      minimizeWindow();
     });
   };
 
