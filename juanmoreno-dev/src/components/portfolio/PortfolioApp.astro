@@ -1,0 +1,248 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+
+// Obtenemos todos los proyectos de la colección
+const projects = await getCollection('projects');
+---
+
+<div class="h-full w-full flex flex-row text-black font-sans bg-white">
+  <!-- Sidebar -->
+  <aside id="portfolio-sidebar" class="w-[300px] h-full border-r border-[#808080] p-8 flex flex-col shrink-0 overflow-y-auto">
+    <div class="flex flex-col items-center text-center">
+      <div class="w-40 h-40 rounded-full bg-gray-200 overflow-hidden mb-4 border border-gray-300 shrink-0">
+        <img src="https://ui-avatars.com/api/?name=Juan+Moreno&size=160&background=random" alt="Avatar" class="w-full h-full object-cover" />
+      </div>
+      <h2 class="text-2xl font-bold font-serif text-black">Juan Moreno</h2>
+      <p class="text-gray-800 text-sm mt-1">The Portfoliopedia</p>
+    </div>
+
+    <div class="mt-12 w-full">
+      <h3 class="mb-2 text-sm text-gray-800">interaction</h3>
+      <hr class="border-t border-[#808080] mb-4" />
+      <ul class="list-disc list-inside text-blue-700 font-medium space-y-2 text-sm">
+        <li><a href="#about" class="hover:underline">About me</a></li>
+        <li><a href="#projects" class="hover:underline">Selected Projects</a></li>
+        <li><a href="#testimonials" class="hover:underline">Client Testimonials</a></li>
+        <li><a href="#socials" class="hover:underline">Socials</a></li>
+        <li><a href="#services" class="hover:underline">Services</a></li>
+        <li><a href="#faq" class="hover:underline">FAQ</a></li>
+        <li><a href="#contact" class="hover:underline">Contact</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 h-full p-10 overflow-y-auto relative scroll-smooth" id="portfolio-main-scroll">
+    
+    <!-- VISTA PRINCIPAL (HOME) -->
+    <div id="home-view" class="flex flex-col gap-10">
+      
+      <!-- Welcome Section -->
+    <section id="welcome" class="border border-gray-300 p-12 flex flex-col items-center justify-center text-center">
+      <h1 class="text-4xl font-normal mb-4">
+        Welcome to my <span class="text-blue-700 font-serif">Portfolio</span>,
+      </h1>
+      <p class="text-xl mb-6 text-gray-800">
+        the digital archive of my work, crafted in a retro-inspired web experience.
+      </p>
+      <div class="flex items-center gap-2 text-green-600 font-semibold text-lg">
+        <span class="w-2.5 h-2.5 rounded-full bg-green-500"></span> Available for work
+      </div>
+    </section>
+
+    <!-- About me Section -->
+    <section id="about" class="border border-gray-300 flex flex-col">
+      <div class="bg-[#e6f4ea] p-4 border-b border-gray-300">
+        <h2 class="text-3xl font-medium">About me</h2>
+      </div>
+      <div class="p-8 space-y-6 text-lg text-gray-900 leading-relaxed">
+        <p>
+          Welcome to my corner of the internet. I'm a creative mind with a passion for design, bringing ideas to life through nostalgic and modern web experiences. Inspired by the aesthetics of the past, I craft digital spaces that feel both familiar and fresh.
+        </p>
+        <p>
+          When I'm not designing, you'll probably find me exploring new creative tools, obsessing over pixel-perfect details, or diving into the depths of the web for inspiration.
+        </p>
+        <p>Let's create something timeless.</p>
+      </div>
+    </section>
+
+    <!-- Selected Projects Section -->
+    <section id="projects" class="border border-gray-300 flex flex-col mb-16">
+      <div class="bg-[#e8f0fe] p-4 border-b border-gray-300">
+        <h2 class="text-3xl font-medium">Selected Projects</h2>
+      </div>
+      <div class="p-[12px] grid grid-cols-2 gap-8">
+        {projects.length > 0 ? (
+          projects.map((project: any) => (
+            <article 
+              class="flex flex-col border border-gray-300 shadow-sm bg-white hover:shadow-md transition-shadow cursor-pointer group project-card-btn"
+              data-project-id={project.id}
+            >
+              <div class="h-64 overflow-hidden border-b border-gray-300 bg-gray-100">
+                <Image 
+                  src={project.data.coverImage} 
+                  alt={project.data.title} 
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                />
+              </div>
+              <div class="p-4 flex flex-col gap-2">
+                <div class="flex justify-between items-start">
+                  <h3 class="font-bold text-xl font-serif leading-tight text-blue-800">{project.data.title}</h3>
+                  <span class="text-xs bg-gray-200 px-2 py-1 rounded text-gray-700 font-mono">{project.data.year}</span>
+                </div>
+                <p class="text-sm text-gray-700 line-clamp-2">{project.data.description}</p>
+                <div class="flex flex-wrap gap-1 mt-2">
+                  {project.data.tags.slice(0, 3).map((tag: any) => (
+                    <span class="text-xs bg-[#e8f0fe] text-blue-800 px-2 py-0.5 rounded-full border border-blue-200">
+                      {tag}
+                    </span>
+                  ))}
+                  {project.data.tags.length > 3 && (
+                    <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+                      +{project.data.tags.length - 3}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </article>
+          ))
+        ) : (
+          <p class="col-span-2 text-center text-gray-500 py-10">No projects found.</p>
+        )}
+      </div>
+    </section>
+    </div> <!-- END HOME VIEW -->
+
+    <!-- VISTAS DE DETALLES DE PROYECTOS -->
+    {projects.map(async (project: any) => {
+      const { Content } = await render(project);
+      return (
+        <div id={`project-view-${project.id}`} class="project-detail-view hidden flex-col gap-10 animate-fade-in">
+          <!-- Back button -->
+          <div class="back-to-home-btn cursor-pointer text-blue-700 hover:text-blue-900 flex items-center gap-2 self-start font-medium transition-colors">
+             <span class="text-xl leading-none">&larr;</span> Back to Portfolio
+          </div>
+          
+          <!-- Header Section (Image & Metadata) -->
+          <div class="flex flex-col xl:flex-row gap-10 items-start mt-4">
+            <div class="w-full xl:w-7/12 flex-shrink-0">
+              <Image 
+                src={project.data.coverImage} 
+                alt={project.data.title} 
+                class="w-full h-auto object-cover" 
+              />
+            </div>
+            <div class="w-full xl:w-5/12 flex flex-col gap-6">
+              <h1 class="!text-2xl font-serif text-black leading-tight">{project.data.title}</h1>
+              <p class="text-gray-700 text-lg leading-relaxed">{project.data.description}</p>
+              
+              {project.data.tags && project.data.tags.length > 0 && (
+                <div class="flex flex-wrap gap-2 mt-2">
+                  {project.data.tags.map((tag: any) => (
+                    <span class="text-xs bg-gray-100 text-gray-800 px-3 py-1 rounded-sm border border-gray-300 font-mono tracking-tight shadow-sm hover:bg-gray-200 transition-colors cursor-default">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+              
+
+
+              {(project.data.liveUrl || project.data.repoUrl) && (
+                <div class="flex gap-4 mt-6">
+                  {project.data.liveUrl && (
+                    <a href={project.data.liveUrl} target="_blank" tabindex="-1">
+                      <button type="button" class="cursor-pointer px-8 py-3 text-xl font-bold">
+                        Ver aplicación
+                      </button>
+                    </a>
+                  )}
+                  {project.data.repoUrl && (
+                    <a href={project.data.repoUrl} target="_blank" tabindex="-1">
+                      <button type="button" class="cursor-pointer px-8 py-3 text-xl font-bold">
+                        Ver repositorio
+                      </button>
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+          
+          <!-- Markdown Body -->
+          <div class="prose prose-lg prose-blue max-w-none prose-headings:font-serif prose-headings:font-normal pb-20 border-t border-gray-300
+                      prose-blockquote:bg-[#e6f4ea] prose-blockquote:border-l-4 prose-blockquote:border-green-600 prose-blockquote:px-6 prose-blockquote:py-4 prose-blockquote:not-italic prose-blockquote:text-gray-800 prose-blockquote:shadow-sm">
+            <Content />
+          </div>
+        </div>
+      );
+    })}
+
+  </main>
+</div>
+
+<style>
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const homeView = document.getElementById('home-view');
+    const sidebar = document.getElementById('portfolio-sidebar');
+    const projectViews = document.querySelectorAll('.project-detail-view');
+    const cardBtns = document.querySelectorAll('.project-card-btn');
+    const backBtns = document.querySelectorAll('.back-to-home-btn');
+    const mainScroll = document.getElementById('portfolio-main-scroll');
+
+    // Show Project Detail
+    cardBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const projectId = btn.getAttribute('data-project-id');
+        const targetView = document.getElementById(`project-view-${projectId}`);
+        
+        if (homeView && targetView) {
+          homeView.classList.add('hidden');
+          homeView.classList.remove('flex');
+          
+          if (sidebar) {
+            sidebar.classList.add('hidden');
+            sidebar.classList.remove('flex');
+          }
+          
+          targetView.classList.remove('hidden');
+          targetView.classList.add('flex');
+
+          // Scroll to top of main container
+          if (mainScroll) mainScroll.scrollTop = 0;
+        }
+      });
+    });
+
+    // Go Back to Home
+    backBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        projectViews.forEach(view => {
+          view.classList.add('hidden');
+          view.classList.remove('flex');
+        });
+        
+        if (homeView) {
+          homeView.classList.remove('hidden');
+          homeView.classList.add('flex');
+        }
+        
+        if (sidebar) {
+          sidebar.classList.remove('hidden');
+          sidebar.classList.add('flex');
+        }
+      });
+    });
+  });
+</script>

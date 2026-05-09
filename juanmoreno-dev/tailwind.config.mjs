@@ -53,5 +53,8 @@ export default {
         content: '1200px'
       }
     }
-  }
+  },
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 };

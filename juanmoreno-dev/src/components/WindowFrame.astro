@@ -15,14 +15,16 @@ const {
   showAddress = true,
   windowId = "window",
   icon = "/favicon.ico",
+  width = "1081px",
+  height = "717px",
 } = Astro.props;
 ---
 
 <div
-  class="window flex flex-col w-full max-w-content bg-[#c0c0c0]"
+  class="window flex flex-col bg-[#c0c0c0]"
   data-window-id={windowId}
   data-window-title={title}
-  style="width: 1081px; height: 717px;"
+  style={`width: ${width}; height: ${height};`}
 >
   <div
     class="title-bar bg-titlebar-active text-white"
