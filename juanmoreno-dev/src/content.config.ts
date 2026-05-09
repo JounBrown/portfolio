@@ -14,6 +14,10 @@ const projectsCollection = defineCollection({
     category: z.string().optional(),
     client: z.string().optional(),
     industry: z.string().optional(),
+    techStack: z.array(z.object({
+      name: z.string(),
+      icon: z.string(),
+    })).optional(),
   }),
 });
 

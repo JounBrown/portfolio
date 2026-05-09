@@ -167,10 +167,31 @@ const projects = await getCollection('projects');
           </div>
           
           <!-- Markdown Body -->
-          <div class="prose prose-lg prose-blue max-w-none prose-headings:font-serif prose-headings:font-normal pb-20 border-t border-gray-300
+          <div class="prose prose-lg prose-blue max-w-none prose-headings:font-serif prose-headings:font-normal pb-10 border-t border-gray-300
                       prose-blockquote:bg-[#e6f4ea] prose-blockquote:border-l-4 prose-blockquote:border-green-600 prose-blockquote:px-6 prose-blockquote:py-4 prose-blockquote:not-italic prose-blockquote:text-gray-800 prose-blockquote:shadow-sm">
             <Content />
           </div>
+
+          <!-- Tech Stack Section -->
+          {project.data.techStack && project.data.techStack.length > 0 && (
+            <div class="border-t border-gray-300 pt-10 pb-20">
+              <h2 class="text-3xl font-serif font-normal mb-8 text-gray-900">Stack Tecnológico</h2>
+              <div class="grid grid-cols-5 gap-8">
+                {project.data.techStack.map((tech: any) => (
+                  <div class="flex flex-col items-center gap-3 p-4 border border-gray-200 bg-gray-50 hover:bg-white hover:shadow-md transition-all duration-200 group">
+                    <div class="w-16 h-16 flex items-center justify-center">
+                      <img 
+                        src={tech.icon} 
+                        alt={tech.name}
+                        class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-200"
+                      />
+                    </div>
+                    <span class="text-sm font-medium text-gray-700 text-center leading-tight">{tech.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       );
     })}
