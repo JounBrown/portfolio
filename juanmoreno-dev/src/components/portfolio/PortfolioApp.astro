@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
+import avatarImage from '../../assets/foto Juan David.jpg';
 
 // Obtenemos todos los proyectos de la colección
 const projects = await getCollection('projects');
@@ -10,10 +11,10 @@ const projects = await getCollection('projects');
   <!-- Sidebar -->
   <aside id="portfolio-sidebar" class="w-[300px] h-full border-r border-[#808080] p-8 flex flex-col shrink-0 overflow-y-auto">
     <div class="flex flex-col items-center text-center">
-      <div class="w-40 h-40 rounded-full bg-gray-200 overflow-hidden mb-4 border border-gray-300 shrink-0">
-        <img src="https://ui-avatars.com/api/?name=Juan+Moreno&size=160&background=random" alt="Avatar" class="w-full h-full object-cover" />
+      <div class="w-50 h-63 rounded-full bg-gray-200 overflow-hidden mb-4 border border-gray-300 shrink-0">
+        <Image src={avatarImage} alt="Juan David Moreno" class="w-full h-full object-cover" />
       </div>
-      <h2 class="text-2xl font-bold font-serif text-black">Juan Moreno</h2>
+      <h2 class="text-2xl font-bold font-serif text-black">Juan David Moreno</h2>
       <p class="text-gray-800 text-sm mt-1">The Portfoliopedia</p>
     </div>
 
@@ -23,10 +24,8 @@ const projects = await getCollection('projects');
       <ul class="list-disc list-inside text-blue-700 font-medium space-y-2 text-sm">
         <li><a href="#about" class="hover:underline">About me</a></li>
         <li><a href="#projects" class="hover:underline">Selected Projects</a></li>
-        <li><a href="#testimonials" class="hover:underline">Client Testimonials</a></li>
         <li><a href="#socials" class="hover:underline">Socials</a></li>
         <li><a href="#services" class="hover:underline">Services</a></li>
-        <li><a href="#faq" class="hover:underline">FAQ</a></li>
         <li><a href="#contact" class="hover:underline">Contact</a></li>
       </ul>
     </div>
@@ -58,12 +57,13 @@ const projects = await getCollection('projects');
       </div>
       <div class="p-8 space-y-6 text-lg text-gray-900 leading-relaxed">
         <p>
-          Welcome to my corner of the internet. I'm a creative mind with a passion for design, bringing ideas to life through nostalgic and modern web experiences. Inspired by the aesthetics of the past, I craft digital spaces that feel both familiar and fresh.
+          Hola soy Juan David Moreno, Estudiante de ultimo semestre de ingeniería informática, con experiencia en creación de apps frontend y backend. Tengo conocimientos en Linux y manejo de nube. Con disposición por seguir aprendiendo y trabajar. 
+          
         </p>
         <p>
-          When I'm not designing, you'll probably find me exploring new creative tools, obsessing over pixel-perfect details, or diving into the depths of the web for inspiration.
+          Conocimientos técnicos:
+          | NodeJS | React | Typescript | HTML5 |CSS3 |Tailwind | Git | GitHub | CI/CD |Next.js | Angular | Express| Python |FastAPI | MySQL | MongoDB | PostgreSQL| Bash | AZURE | AWS | Kubernetes |
         </p>
-        <p>Let's create something timeless.</p>
       </div>
     </section>
 
@@ -89,7 +89,6 @@ const projects = await getCollection('projects');
               <div class="p-4 flex flex-col gap-2">
                 <div class="flex justify-between items-start">
                   <h3 class="font-bold text-xl font-serif leading-tight text-blue-800">{project.data.title}</h3>
-                  <span class="text-xs bg-gray-200 px-2 py-1 rounded text-gray-700 font-mono">{project.data.year}</span>
                 </div>
                 <p class="text-sm text-gray-700 line-clamp-2">{project.data.description}</p>
                 <div class="flex flex-wrap gap-1 mt-2">
