@@ -1,0 +1,71 @@
+<menu class="menu-bar flex items-center gap-0">
+	<div class="menu-bar-strip h-[25px] w-[5px] shrink-0"></div>
+	<li>
+		<button class="menu-btn">
+			<u>F</u>ile
+		</button>
+	</li>
+	<li>
+		<button class="menu-btn">
+			<u>E</u>dit
+		</button>
+	</li>
+	<li>
+		<button class="menu-btn">
+			<u>V</u>iew
+		</button>
+	</li>
+	<li>
+		<button class="menu-btn">
+			<u>G</u>o
+		</button>
+	</li>
+	<li>
+		<button class="menu-btn">
+			<u>F</u>avorites
+		</button>
+	</li>
+	<li>
+		<button class="menu-btn">
+			<u>T</u>ools
+		</button>
+	</li>
+	<li>
+		<button class="menu-btn">
+			<u>H</u>elp
+		</button>
+	</li>
+</menu>
+
+<style>
+	.menu-bar-strip {
+		margin: 4px 6px 4px 5px;
+		background: #bdbdbd;
+		box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #000000;
+	}
+
+	.menu-btn {
+		min-width: 0;
+		min-height: 0;
+		background: transparent;
+		box-shadow: none;
+		border: none;
+		padding: 4px 10px;
+		font-family: inherit;
+		font-size: 16px;
+		color: inherit;
+		cursor: default;
+		outline: none;
+	}
+
+	.menu-btn:hover {
+		box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff,
+			inset -2px -2px #808080, inset 2px 2px #dfdfdf;
+	}
+
+	.menu-btn:active {
+		box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a,
+			inset -2px -2px #dfdfdf, inset 2px 2px #808080;
+		padding: 5px 9px 3px 11px;
+	}
+</style>

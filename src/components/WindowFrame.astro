@@ -1,0 +1,84 @@
+---
+import MenuBar from "./window-frame/MenuBar.astro";
+import Toolbar from "./window-frame/Toolbar.astro";
+import AddressBar from "./window-frame/AddressBar.astro";
+
+const {
+  title = "Portfolio Explorer",
+  showMenu = true,
+  showToolbar = true,
+  showAddress = true,
+  windowId = "window",
+  icon = "/favicon.ico",
+  width = "1081px",
+  height = "717px",
+} = Astro.props;
+---
+
+<div
+  class="window flex flex-col bg-[#c0c0c0]"
+  data-window-id={windowId}
+  data-window-title={title}
+  data-window-state="normal"
+  data-window-minimized="false"
+  style={`width: ${width}; height: ${height};`}
+>
+  <div
+    class="title-bar bg-titlebar-active text-white"
+    style="cursor: move; user-select: none; touch-action: none;"
+  >
+    <div
+      class="window-header flex w-full items-center justify-between gap-win-8 px-win-8"
+    >
+      <div class="flex items-center gap-win-8">
+        <img src={icon} alt="Window icon" class="h-4 w-4 shrink-0" />
+        <div class="title-bar-text">{title}</div>
+      </div>
+
+      <div class="title-bar-controls">
+        <button aria-label="Minimize" data-window-minimize={windowId}></button>
+        <button aria-label="Maximize" data-window-maximize={windowId}></button>
+        <button aria-label="Close" data-window-close={windowId}></button>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="window-bars overflow-hidden bg-[#c0c0c0]"
+    style="border: 1px solid #808080; box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #000000;"
+  >
+    {
+      showMenu && <MenuBar />
+    }
+
+    {
+      showMenu && showToolbar && (
+        <div
+          class="h-[2px] shrink-0"
+          style="margin: 0 1px; width: calc(100% - 3px); background: #c0c0c0; box-shadow: inset 0 1px 0 #ffffff, inset 0 -1px 0 #808080;"
+        />
+      )
+    }
+
+    {
+      showToolbar && <Toolbar />
+    }
+
+    {
+      showToolbar && showAddress && (
+        <div
+          class="h-[2px] shrink-0"
+          style="margin: 0 1px; width: calc(100% - 3px); background: #c0c0c0; box-shadow: inset 0 1px 0 #ffffff, inset 0 -1px 0 #808080;"
+        />
+      )
+    }
+
+    {
+      showAddress && <AddressBar />
+    }
+  </div>
+
+  <div class="window-content window-body flex-1 bg-white overflow-auto" style="margin: 4px; box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080;">
+    <slot />
+  </div>
+</div>
