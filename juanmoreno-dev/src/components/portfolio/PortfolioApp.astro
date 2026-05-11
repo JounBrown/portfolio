@@ -2,9 +2,23 @@
 import { getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import avatarImage from '../../assets/foto Juan David.jpg';
+import s3Icon from '../../assets/Simple Storage Service.svg';
 
-// Obtenemos todos los proyectos de la colección
+// Obtenemos proyectos y experiencia de las colecciones
+const experiences = await getCollection('experience');
 const projects = await getCollection('projects');
+
+const resolveTechIcon = (icon: string) => {
+  if (icon === '../../assets/Simple Storage Service.svg') {
+    return s3Icon.src;
+  }
+
+  if (icon.startsWith('http') || icon.startsWith('/')) {
+    return icon;
+  }
+
+  return new URL(icon, import.meta.url).href;
+};
 ---
 
 <div class="h-full w-full flex flex-row text-black font-sans bg-white">
@@ -23,6 +37,7 @@ const projects = await getCollection('projects');
       <hr class="border-t border-[#808080] mb-4" />
       <ul class="list-disc list-inside text-blue-700 font-medium space-y-2 text-sm">
         <li><a href="#about" class="hover:underline">About me</a></li>
+        <li><a href="#experience" class="hover:underline">Experience</a></li>
         <li><a href="#projects" class="hover:underline">Selected Projects</a></li>
         <li><a href="#socials" class="hover:underline">Socials</a></li>
         <li><a href="#services" class="hover:underline">Services</a></li>
@@ -64,6 +79,51 @@ const projects = await getCollection('projects');
           Conocimientos técnicos:
           | NodeJS | React | Typescript | HTML5 |CSS3 |Tailwind | Git | GitHub | CI/CD |Next.js | Angular | Express| Python |FastAPI | MySQL | MongoDB | PostgreSQL| Bash | AZURE | AWS | Kubernetes |
         </p>
+      </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="border border-gray-300 flex flex-col">
+      <div class="bg-[#e8f0fe] p-4 border-b border-gray-300">
+        <h2 class="text-3xl font-medium">Experience</h2>
+      </div>
+      <div class="p-[12px] grid grid-cols-2 gap-8">
+        {experiences.length > 0 ? (
+          experiences.map((experience: any) => (
+            <article 
+              class="flex flex-col border border-gray-300 shadow-sm bg-[#ddcef2] hover:shadow-md transition-shadow cursor-pointer group project-card-btn"
+              data-project-id={experience.id}
+            >
+              <div class="h-64 overflow-hidden border-b border-gray-300 bg-gray-100">
+                <Image 
+                  src={experience.data.coverImage} 
+                  alt={experience.data.title} 
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                />
+              </div>
+              <div class="p-4 flex flex-col gap-2">
+                <div class="flex justify-between items-start">
+                  <h3 class="font-bold text-xl font-serif leading-tight text-blue-800">{experience.data.title}</h3>
+                </div>
+                <p class="text-sm text-gray-700 line-clamp-2">{experience.data.description}</p>
+                <div class="flex flex-wrap gap-1 mt-2">
+                  {experience.data.tags.slice(0, 3).map((tag: any) => (
+                    <span class="text-xs bg-[#e8f0fe] text-blue-800 px-2 py-0.5 rounded-full border border-blue-200">
+                      {tag}
+                    </span>
+                  ))}
+                  {experience.data.tags.length > 3 && (
+                    <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+                      +{experience.data.tags.length - 3}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </article>
+          ))
+        ) : (
+          <p class="col-span-2 text-center text-gray-500 py-10">No experience found.</p>
+        )}
       </div>
     </section>
 
@@ -112,6 +172,90 @@ const projects = await getCollection('projects');
       </div>
     </section>
     </div> <!-- END HOME VIEW -->
+
+    <!-- VISTAS DE DETALLES DE EXPERIENCE -->
+    {experiences.map(async (experience: any) => {
+      const { Content } = await render(experience);
+      return (
+        <div id={`project-view-${experience.id}`} class="project-detail-view hidden flex-col gap-10 animate-fade-in">
+
+          <!-- Header Section (Image & Metadata) -->
+          <div class="flex flex-col xl:flex-row gap-10 items-start mt-0">
+            <div class="w-full xl:w-7/12 flex-shrink-0">
+              <Image 
+                src={experience.data.coverImage} 
+                alt={experience.data.title} 
+                class="w-full h-auto object-cover" 
+              />
+            </div>
+            <div class="w-full xl:w-5/12 flex flex-col gap-6">
+              <h1 class="!text-2xl font-serif text-black leading-tight">{experience.data.title}</h1>
+              <p class="text-gray-700 text-lg leading-relaxed">{experience.data.description}</p>
+              
+              {experience.data.tags && experience.data.tags.length > 0 && (
+                <div class="flex flex-wrap gap-2 mt-2">
+                  {experience.data.tags.map((tag: any) => (
+                    <span class="text-xs bg-gray-100 text-gray-800 px-3 py-1 rounded-sm border border-gray-300 font-mono tracking-tight shadow-sm hover:bg-gray-200 transition-colors cursor-default">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+              
+
+
+
+              {(experience.data.liveUrl || experience.data.repoUrl) && (
+                <div class="flex gap-4 mt-6">
+                  {experience.data.liveUrl && (
+                    <a href={experience.data.liveUrl} target="_blank" tabindex="-1">
+                      <button type="button" class="cursor-pointer px-8 py-3 text-xl font-bold">
+                        Ver aplicación
+                      </button>
+                    </a>
+                  )}
+                  {experience.data.repoUrl && (
+                    <a href={experience.data.repoUrl} target="_blank" tabindex="-1">
+                      <button type="button" class="cursor-pointer px-8 py-3 text-xl font-bold">
+                        Ver repositorio
+                      </button>
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+          
+          <!-- Markdown Body -->
+          <div class="prose prose-lg prose-blue max-w-none prose-headings:font-serif prose-headings:font-normal pb-10 border-t border-gray-300
+                      prose-img:w-full prose-img:max-w-none prose-img:my-8
+                      prose-blockquote:bg-[#e6f4ea] prose-blockquote:border-l-4 prose-blockquote:border-green-600 prose-blockquote:px-6 prose-blockquote:py-4 prose-blockquote:not-italic prose-blockquote:text-gray-800 prose-blockquote:shadow-sm">
+            <Content />
+          </div>
+
+          <!-- Tech Stack Section -->
+          {experience.data.techStack && experience.data.techStack.length > 0 && (
+            <div class="border-t border-gray-300 pt-10 pb-20">
+              <h2 class="text-3xl font-serif font-normal mb-8 text-gray-900">Stack Tecnológico</h2>
+              <div class="grid grid-cols-5 gap-8">
+                {experience.data.techStack.map((tech: any) => (
+                  <div class="flex flex-col items-center gap-3 p-4 border border-gray-200 bg-gray-50 hover:bg-white hover:shadow-md transition-all duration-200 group">
+                    <div class="w-16 h-16 flex items-center justify-center">
+                      <img 
+                        src={resolveTechIcon(tech.icon)} 
+                        alt={tech.name}
+                        class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-200"
+                      />
+                    </div>
+                    <span class="text-sm font-medium text-gray-700 text-center leading-tight">{tech.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    })}
 
     <!-- VISTAS DE DETALLES DE PROYECTOS -->
     {projects.map(async (project: any) => {

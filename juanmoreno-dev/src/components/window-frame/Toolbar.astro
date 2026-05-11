@@ -1,0 +1,118 @@
+---
+import arrowIcon from "../../assets/arrow.ico?url";
+import errorIcon from "../../assets/error.ico?url";
+import refreshIcon from "../../assets/refresh.ico?url";
+import homeIcon from "../../assets/home.ico?url";
+import searchIcon from "../../assets/search_web.ico?url";
+import favoritesIcon from "../../assets/directory_favorites.ico?url";
+import printIcon from "../../assets/printer.ico?url";
+---
+
+<div class="window-body flex items-center gap-0 bg-[#c0c0c0] pl-0 pr-0 py-0" style="margin: 0;">
+	<div class="toolbar-strip w-[5px] shrink-0"></div>
+	<button class="toolbar-btn toolbar-back-button">
+		<img src={arrowIcon} alt="Back" class="h-6 w-6 shrink-0" style="transform: scaleX(-1);" />
+		<span>Back</span>
+	</button>
+	<button class="toolbar-btn toolbar-forward-button">
+		<img src={arrowIcon} alt="Forward" class="h-6 w-6 shrink-0" />
+		<span>Forward</span>
+	</button>
+	<button class="toolbar-btn toolbar-stop-button">
+		<img src={errorIcon} alt="Stop" class="toolbar-stop-icon h-6 w-6 shrink-0" />
+		<span>Stop</span>
+	</button>
+	<button class="toolbar-btn toolbar-refresh-button">
+		<img src={refreshIcon} alt="Refresh" class="toolbar-refresh-icon h-6 w-6 shrink-0" />
+		<span>Refresh</span>
+	</button>
+	<button class="toolbar-btn toolbar-home-button">
+		<img src={homeIcon} alt="Home" class="toolbar-home-icon h-6 w-6 shrink-0" />
+		<span>Home</span>
+	</button>
+	<button class="toolbar-btn toolbar-search-button">
+		<img src={searchIcon} alt="Search" class="toolbar-search-icon h-6 w-6 shrink-0" />
+		<span>Search</span>
+	</button>
+	<button class="toolbar-btn toolbar-favorites-button">
+		<img src={favoritesIcon} alt="Favorites" class="toolbar-favorites-icon h-6 w-6 shrink-0" />
+		<span>Favorites</span>
+	</button>
+	<button class="toolbar-btn toolbar-print-button">
+		<img src={printIcon} alt="Print" class="toolbar-print-icon h-6 w-6 shrink-0" />
+		<span>Print</span>
+	</button>
+</div>
+
+<style>
+	.toolbar-strip {
+		height: 38px;
+		min-height: 38px;
+		max-height: 38px;
+		margin: 3px 5px;
+		background: #bdbdbd;
+		box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #000000;
+	}
+
+	.toolbar-btn {
+		min-width: 75px;
+		min-height: 46px;
+		background: transparent !important;
+		box-shadow: none !important;
+		border: none !important;
+		padding: 4px 6px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0;
+		font-family: inherit;
+		font-size: 15px;
+		color: inherit;
+		cursor: default;
+		outline: none;
+	}
+
+	.toolbar-btn:hover {
+		box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff,
+			inset -2px -2px #808080, inset 2px 2px #dfdfdf !important;
+	}
+
+	.toolbar-btn:active {
+		box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a,
+			inset -2px -2px #dfdfdf, inset 2px 2px #808080 !important;
+		padding: 5px 5px 3px 7px;
+	}
+
+	.toolbar-btn img {
+		filter: grayscale(1) !important;
+		opacity: 0.6 !important;
+		transition: filter 0s, opacity 0s;
+	}
+
+	.toolbar-btn:hover img,
+	.toolbar-btn:active img {
+		filter: none !important;
+		opacity: 1 !important;
+	}
+
+	.toolbar-btn.toolbar-back-button img,
+	.toolbar-btn.toolbar-forward-button img,
+	.toolbar-btn.toolbar-back-button:hover img,
+	.toolbar-btn.toolbar-forward-button:hover img,
+	.toolbar-btn.toolbar-back-button:active img,
+	.toolbar-btn.toolbar-forward-button:active img {
+		filter: grayscale(1) brightness(0.2) saturate(0) !important;
+		opacity: 0.75 !important;
+	}
+
+	.toolbar-stop-icon,
+	.toolbar-refresh-icon,
+	.toolbar-home-icon,
+	.toolbar-search-icon,
+	.toolbar-favorites-icon,
+	.toolbar-print-icon {
+		filter: none;
+		opacity: 1;
+	}
+</style>
