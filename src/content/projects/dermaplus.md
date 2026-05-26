@@ -1,7 +1,7 @@
 ---
 title: "DermaPlus - Landing Page para Clínica Dermatológica"
 description: "Landing page SPA con diseño premium, animaciones y formulario de contacto para la clínica DermaPlus."
-coverImage: "../../assets/projects/dermaplus/hero.png"
+coverImage: "../../assets/projects/dermaplus/hero.PNG"
 year: "2025"
 tags: ["Next.js", "React 19", "Chakra UI", "TypeScript", "Framer Motion", "Landing Page", "SPA"]
 repoUrl: "https://github.com/JounBrown/dermaplus"
@@ -24,11 +24,11 @@ techStack:
     icon: "https://cdn.worldvectorlogo.com/logos/vercel.svg"
 ---
 
-![dashboard de la landing DermaPlus](../../assets/projects/dermaplus/dashboard.png)
+![dashboard de la landing DermaPlus](../../assets/projects/dermaplus/dashboard.PNG)
 
-![Sección de servicios y contacto](../../assets/projects/dermaplus/services.png)
+![Sección de servicios y contacto](../../assets/projects/dermaplus/services.PNG)
 
-![Hero de la landing DermaPlus](../../assets/projects/dermaplus/hero.png)
+![Hero de la landing DermaPlus](../../assets/projects/dermaplus/hero.PNG)
 
 
 ## Resumen del Proyecto
