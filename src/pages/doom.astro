@@ -1,0 +1,49 @@
+---
+// Página dedicada exclusivamente a ejecutar JS-DOS en aislamiento
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOOM</title>
+    <!-- Cargamos JS-DOS aquí adentro, donde su CSS no puede escapar -->
+    <link rel="stylesheet" href="/js-dos/js-dos.css" />
+    <script is:inline src="/js-dos/js-dos.js"></script>
+    <style>
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            width: 100%; 
+            height: 100%; 
+            overflow: hidden; 
+            background-color: black; 
+        }
+        #dos-container { 
+            width: 100%; 
+            height: 100%; 
+        }
+    </style>
+</head>
+<body>
+    <div id="dos-container"></div>
+    
+    <script is:inline>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('dos-container');
+            const gameUrl = window.location.origin + "/games/doom.jsdos";
+            
+            try {
+                window.Dos(container, {
+                    pathPrefix: "/js-dos/emulators/", 
+                    url: gameUrl,
+                    autoStart: true,
+                    kiosk: true,
+                });
+            } catch (error) {
+                console.error("Error al ejecutar JS-DOS:", error);
+            }
+        });
+    </script>
+</body>
+</html>

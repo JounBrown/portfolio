@@ -105,6 +105,7 @@ const setupDesktopApp = (appId: string, title: string) => {
 
 setupDesktopApp("recycle", "Recycle Bin");
 setupDesktopApp("portfolio", "Portfolio");
+setupDesktopApp("doom", "DOOM.EXE");
 
 updateDesktopScale();
 window.addEventListener("resize", updateDesktopScale);

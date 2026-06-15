@@ -1,0 +1,55 @@
+---
+import WindowFrame from "./WindowFrame.astro";
+import doomIcon from "../assets/doom_icon.png?url";
+---
+
+<div
+  id="doom-window"
+  class="absolute left-1/2 top-1/2 hidden z-[100]"
+  style="transform: translate(-50%, -50%);"
+>
+  <WindowFrame
+    title="DOOM.EXE"
+    windowId="doom-window"
+    icon={doomIcon}
+    showMenu={false}
+    showToolbar={false}
+    showAddress={false}
+    width="800px"
+    height="600px"
+  >
+    <iframe id="doom-iframe" class="w-full h-full bg-black border-none" src=""></iframe>
+  </WindowFrame>
+</div>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const doomWindow = document.getElementById('doom-window');
+    const doomIcon = document.getElementById('doom-icon');
+    const doomIframe = document.getElementById('doom-iframe');
+
+    doomIcon?.addEventListener('dblclick', async () => {
+      if (doomWindow) {
+        doomWindow.classList.remove('hidden');
+      }
+
+      // Inyectar el juego en el iframe al abrir
+      if (doomIframe && !doomIframe.src.includes('doom')) {
+        doomIframe.src = '/doom';
+      }
+    });
+
+    // Manejar el cierre nativo para detener JS-DOS destruyendo el iframe
+    const closeBtn = document.querySelector('[data-window-close="doom-window"]');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        if (doomWindow) {
+          doomWindow.classList.add('hidden');
+        }
+        if (doomIframe) {
+          doomIframe.src = ''; // Esto detiene la emulación y el sonido inmediatamente
+        }
+      });
+    }
+  });
+</script>

@@ -1,12 +1,15 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Desktop from '../components/Desktop.astro';
-import Taskbar from '../components/Taskbar.astro';
+import Layout from "../layouts/Layout.astro";
+import Desktop from "../components/Desktop.astro";
+import Taskbar from "../components/Taskbar.astro";
+import DoomWindow from "../components/DoomWindow.astro";
 ---
 
 <Layout>
-	<div class="h-screen w-screen overflow-hidden">
+	<div class="h-screen w-screen overflow-hidden relative">
 		<Desktop />
+
+		<DoomWindow />
 
 		<Taskbar />
 	</div>
