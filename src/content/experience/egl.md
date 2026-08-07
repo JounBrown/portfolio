@@ -1,7 +1,7 @@
 ---
 title: "EGL | SaaS de Gestión de Inventario Multi-Tenant"
 description: "Desarrollo full stack de una solución vertical tipo ERP para gestión de inventario de producción de pantalones. Inició como trabajo freelance y continuó como pasantía de trabajo de grado."
-coverImage: "../../assets/experience/pantalones.PNG"
+coverImage: "../../assets/experience/EGLsas/pantalones.PNG"
 year: "2025-2026"
 tags: ["Next.js 16", "TypeScript", "Node.js", "Express", "PostgreSQL", "Clerk", "Docker Compose", "Railway"]
 role: "Full Stack Developer"
@@ -78,6 +78,6 @@ Trabajé en dos etapas sobre el mismo producto: primero como freelance y despué
 
 ## Capturas del sistema
 
-![Gestión de insumos](../../assets/experience/insumos.PNG)
+![Gestión de insumos](../../assets/experience/EGLsas/insumos.PNG)
 
-![Gestión de usuarios y permisos](../../assets/experience/permisos.PNG)
+![Gestión de usuarios y permisos](../../assets/experience/EGLsas/permisos.PNG)
